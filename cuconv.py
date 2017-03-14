@@ -1,35 +1,35 @@
 import numpy as np
 
-# import pycuda stuff
 import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
-## DEVICE SETUP
-BLOCK_SIZE = 32 #Max 32. 32**2 = 1024, max for GTX1060
+# DEVICE SETUP
+BLOCK_SIZE = 32 # Max 32. 32**2 = 1024, max for GTX1060
     
 # Compile kernel
 mod = SourceModule(open("kernel.cu", "r").read())
 
 # Get functions
-conv = mod.get_function("conv");
+conv = mod.get_function("conv")
+
 
 def convolve(a,b):
     global BLOCK_SIZE
     global conv
     
-    a, b = [np.array(i).astype(np.float32) for i in [a,b]]
+    a, b = [np.array(i).astype(np.float32) for i in [a, b]]
     
     # Matrix A 
-    aw = np.int32(a.shape[1]) #Widthof in matrix
-    ah = np.int32(a.shape[0]) #Height of in matrix
+    aw = np.int32(a.shape[1]) # Widthof in matrix
+    ah = np.int32(a.shape[0]) # Height of in matrix
     
     # Matrix B (kernel)
-    bw = np.int32(b.shape[1]) #Widthof in matrix
-    if bw%2==0:
+    bw = np.int32(b.shape[1]) # Widthof in matrix
+    if bw % 2 == 0:
         print "Kernel width is not an odd number! Strange things will happen..."
-    bh = np.int32(b.shape[0]) #Height of in matrix
-    if bh%2==0:
+    bh = np.int32(b.shape[0]) # Height of in matrix
+    if bh % 2 == 0:
         print "Kernel height is not an odd number! Strange things will happen..."
     b_sum = np.int32(np.absolute(b).sum())
     
@@ -47,10 +47,10 @@ def convolve(a,b):
     cuda.memcpy_htod(b_gpu, b)
 
     # Set grid size from A matrix
-    grid=(aw/BLOCK_SIZE+(0 if aw%BLOCK_SIZE is 0 else 1), ah/BLOCK_SIZE+(0 if ah%BLOCK_SIZE is 0 else 1), 1)
+    grid = (aw/BLOCK_SIZE+(0 if aw % BLOCK_SIZE is 0 else 1), ah/BLOCK_SIZE+(0 if ah % BLOCK_SIZE is 0 else 1), 1)
     
     # Call gpu function
-    conv(a_gpu, b_gpu, aw, ah, bw, bh, b_sum, c_gpu, block=(BLOCK_SIZE,BLOCK_SIZE,1), grid=grid);
+    conv(a_gpu, b_gpu, aw, ah, bw, bh, b_sum, c_gpu, block=(BLOCK_SIZE, BLOCK_SIZE, 1), grid=grid)
     
     # Copy back the result
     cuda.memcpy_dtoh(c, c_gpu)
