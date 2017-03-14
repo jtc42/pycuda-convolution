@@ -1,18 +1,18 @@
 import numpy as np
 
+
 def convolve(a, b):
     
-    image, kernel = [np.array(i).astype(np.float32) for i in [a,b]]
+    image, kernel = [np.array(i).astype(np.float32) for i in [a, b]]
     
-    #Sum of absolute values in kernel matrix
+    # Sum of absolute values in kernel matrix
     kernel_sum = np.absolute(kernel).sum()
     
-    #Calculate the dimensions for iteration over the pixels and weights
+    # Calculate the dimensions for iteration over the pixels and weights
     i_width, i_height = image.shape[1], image.shape[0]
     k_width, k_height = kernel.shape[1], kernel.shape[0]
-    
-    #TO-DO: Add a check to ensure a valid 2D kernel, otherwise kx, ky ranges break
-    if k_width%2==0 or k_height%2==0:
+
+    if k_width % 2 == 0 or k_height % 2 == 0:
         print "Warning: Kernel dimensions not odd. Centre point ambiguous, could break code."
     
     padding_w = k_width-1
@@ -21,33 +21,33 @@ def convolve(a, b):
     f_width = i_width - padding_w
     f_height = i_height - padding_h
     
-    #Prepare the output array
+    # Prepare the output array
     filtered = np.zeros((f_height, f_width))
     
-    #Iterate over image
+    # Iterate over image
     for y in range(f_height):
         for x in range(f_width):
             
-            weighted_pixel_sum = 0 #Initial pixel value
+            weighted_pixel_sum = 0  # Initial pixel value
     
-            #Iterate over kernel
-            for ky in range(-(padding_h/2), (padding_h/2)+1): #May need tweaking
-                for kx in range(-(padding_w/2), (padding_w/2)+1): #May need tweaking
+            # Iterate over kernel
+            for ky in range(-(padding_h/2), (padding_h/2)+1):
+                for kx in range(-(padding_w/2), (padding_w/2)+1):
                     
-                    #Coordinates of pixel on original image (for each kernel element)
+                    # Coordinates of pixel on original image (for each kernel element)
                     pixel_y = y - ky + padding_h/2
                     pixel_x = x - kx + padding_w/2
         
-                    #Set value of pixel based on coordinates
+                    # Set value of pixel based on coordinates
                     pixel = image[pixel_y, pixel_x] 
 
-                    #Get weight of this pixel from kernel matrix
+                    # Get weight of this pixel from kernel matrix
                     weight = kernel[ky + (k_height / 2), kx + (k_width / 2)]
     
-                    #Weigh the pixel value and sum, update pixel value for this image coordinate
+                    # Weigh the pixel value and sum, update pixel value for this image coordinate
                     weighted_pixel_sum += pixel * weight
     
-            #Set pixel at location (x,y) in output to sum of the weighed neighborhood
+            # Set pixel at location (x,y) in output to sum of the weighed neighborhood
             filtered[y, x] = weighted_pixel_sum / kernel_sum
     
     return filtered
