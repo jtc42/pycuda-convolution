@@ -5,7 +5,7 @@ import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
 # DEVICE SETUP
-BLOCK_SIZE = 32 # Max 32. 32**2 = 1024, max for GTX1060
+BLOCK_SIZE = 32  # Max 32. 32**2 = 1024, max for GTX1060
     
 # Compile kernel
 mod = SourceModule(open("kernel.cu", "r").read())
@@ -14,21 +14,21 @@ mod = SourceModule(open("kernel.cu", "r").read())
 conv = mod.get_function("conv")
 
 
-def convolve(a,b):
+def convolve(a, b):
     global BLOCK_SIZE
     global conv
     
     a, b = [np.array(i).astype(np.float32) for i in [a, b]]
     
     # Matrix A 
-    aw = np.int32(a.shape[1]) # Widthof in matrix
-    ah = np.int32(a.shape[0]) # Height of in matrix
+    aw = np.int32(a.shape[1])  # Widthof in matrix
+    ah = np.int32(a.shape[0])  # Height of in matrix
     
     # Matrix B (kernel)
-    bw = np.int32(b.shape[1]) # Widthof in matrix
+    bw = np.int32(b.shape[1])  # Widthof in matrix
     if bw % 2 == 0:
         print "Kernel width is not an odd number! Strange things will happen..."
-    bh = np.int32(b.shape[0]) # Height of in matrix
+    bh = np.int32(b.shape[0])  # Height of in matrix
     if bh % 2 == 0:
         print "Kernel height is not an odd number! Strange things will happen..."
     b_sum = np.int32(np.absolute(b).sum())
