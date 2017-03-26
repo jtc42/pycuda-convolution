@@ -27,10 +27,10 @@ def convolve(a, b):
     # Matrix B (kernel)
     bw = np.int32(b.shape[1])  # Widthof in matrix
     if bw % 2 == 0:
-        print "Kernel width is not an odd number! Strange things will happen..."
+        print("Kernel width is not an odd number! Strange things will happen...")
     bh = np.int32(b.shape[0])  # Height of in matrix
     if bh % 2 == 0:
-        print "Kernel height is not an odd number! Strange things will happen..."
+        print("Kernel height is not an odd number! Strange things will happen...")
     b_sum = np.int32(np.absolute(b).sum())
     
     # Matrix C, subtract 2*padding, *2 because it's taken off all sides
@@ -47,7 +47,9 @@ def convolve(a, b):
     cuda.memcpy_htod(b_gpu, b)
 
     # Set grid size from A matrix
-    grid = (aw/BLOCK_SIZE+(0 if aw % BLOCK_SIZE is 0 else 1), ah/BLOCK_SIZE+(0 if ah % BLOCK_SIZE is 0 else 1), 1)
+    grid = (int(aw/BLOCK_SIZE+(0 if aw % BLOCK_SIZE is 0 else 1)), 
+            int(ah/BLOCK_SIZE+(0 if ah % BLOCK_SIZE is 0 else 1)), 
+                          1)
     
     # Call gpu function
     conv(a_gpu, b_gpu, aw, ah, bw, bh, b_sum, c_gpu, block=(BLOCK_SIZE, BLOCK_SIZE, 1), grid=grid)

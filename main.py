@@ -47,7 +47,7 @@ misc.imsave('results/g_result_sh.png', to_img(c))
 c = cu.convolve(a, k_b5)
 misc.imsave('results/g_result_b5.png', to_img(c))
 end = time.time()
-print "GPU time: %.5f s" % (end-start)
+print("GPU time: %.5f s" % (end-start))
 
 # SCIPY
 start = time.time()
@@ -58,7 +58,7 @@ misc.imsave('results/s_result_sh.png', to_img(c))
 c = sg.convolve(a, nrm(k_b5))
 misc.imsave('results/s_result_b5.png', to_img(c))
 end = time.time()
-print "Scipy time: %.5f s" % (end-start)
+print("Scipy time: %.5f s" % (end-start))
 
 # CPU
 start = time.time()
@@ -69,4 +69,4 @@ misc.imsave('results/c_result_sh.png', to_img(c))
 c = cp.convolve(a, k_b5)
 misc.imsave('results/c_result_b5.png', to_img(c))
 end = time.time()
-print "CPU time: %.5f s" % (end-start)
+print("CPU time: %.5f s" % (end-start))

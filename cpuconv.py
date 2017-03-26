@@ -13,7 +13,7 @@ def convolve(a, b):
     k_width, k_height = kernel.shape[1], kernel.shape[0]
 
     if k_width % 2 == 0 or k_height % 2 == 0:
-        print "Warning: Kernel dimensions not odd. Centre point ambiguous, could break code."
+        print("Warning: Kernel dimensions not odd. Centre point ambiguous, could break code.")
     
     padding_w = k_width-1
     padding_h = k_height-1
@@ -31,18 +31,18 @@ def convolve(a, b):
             weighted_pixel_sum = 0  # Initial pixel value
     
             # Iterate over kernel
-            for ky in range(-(padding_h/2), (padding_h/2)+1):
-                for kx in range(-(padding_w/2), (padding_w/2)+1):
+            for ky in range(-int(padding_h/2), int(padding_h/2)+1):
+                for kx in range(-int(padding_w/2), int(padding_w/2)+1):
                     
                     # Coordinates of pixel on original image (for each kernel element)
-                    pixel_y = y - ky + padding_h/2
-                    pixel_x = x - kx + padding_w/2
+                    pixel_y = int(y - ky + padding_h/2)
+                    pixel_x = int(x - kx + padding_w/2)
         
                     # Set value of pixel based on coordinates
                     pixel = image[pixel_y, pixel_x] 
 
                     # Get weight of this pixel from kernel matrix
-                    weight = kernel[ky + (k_height / 2), kx + (k_width / 2)]
+                    weight = kernel[ky + int(k_height / 2), kx + int(k_width / 2)]
     
                     # Weigh the pixel value and sum, update pixel value for this image coordinate
                     weighted_pixel_sum += pixel * weight
